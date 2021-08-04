@@ -15,10 +15,14 @@
     {
       "parallelizable" : true,
       "skippedTests" : [
+        "RewardedAdsClickabilityTests\/testEndCardCountdownTimerDoesNotClickThrough()",
+        "RewardedAdsClickabilityTests\/testPlayableClickability()",
         "RewardedAdsClickabilityTests\/testStaticImageCannotBeClickedBeforeRewardDuration()",
         "RewardedAdsClickabilityTests\/testStaticImageClickability()",
         "RewardedAdsEndCardTests\/testMRAIDEndCard()",
         "RewardedAdsEndCardTests\/testPlayableMRAIDEndCard()",
+        "RewardedAdsPausabilityTests\/testEndCardClickPausesTimer()",
+        "RewardedAdsPausabilityTests\/testPlayableClickPausesTimer()",
         "RewardedAdsPausabilityTests\/testStaticImageHomeButtonPausesTimer()",
         "RewardedAdsSkippabilityTests\/testStaticImage()",
         "RewardedAdsTrackerTests\/testStaticImage()"

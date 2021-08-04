@@ -17,10 +17,6 @@
      inApplicationSafeArea:(CGRect)applicationSafeArea
             allowOffscreen:(BOOL)allowOffscreen;
 
-+ (BOOL)isValidCloseButtonPlacement:(MPAdViewCloseButtonLocation)closeButtonLocation
-                          inAdFrame:(CGRect)adFrame
-              inApplicationSafeArea:(CGRect)applicationSafeArea;
-
 + (CGRect)adjustedFrameForFrame:(CGRect)frame toFitIntoApplicationSafeArea:(CGRect)applicationSafeArea;
 
 @end

@@ -1,5 +1,5 @@
 //
-//  MPCountdownTimerDelegate.h
+//  MPAdViewOverlayMock.h
 //
 //  Copyright 2018-2021 Twitter, Inc.
 //  Licensed under the MoPub SDK License Agreement
@@ -7,13 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MPAdViewOverlay.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol MPCountdownTimerDelegate <NSObject>
-
-- (void)countdownTimerDidFinishCountdown:(id)source;
-
+@interface MPAdViewOverlayMock : MPAdViewOverlay
+@property (nonatomic, assign, readonly) BOOL isPaused;
 @end
 
 NS_ASSUME_NONNULL_END

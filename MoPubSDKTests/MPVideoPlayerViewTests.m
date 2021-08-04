@@ -141,46 +141,6 @@
     XCTAssertNil(player.industryIconHideTimeObserver);
 }
 
-#pragma mark - Backgrounding and Foregrounding
-
-- (void)testBackgroundingAndForegroundingVideoPlayer {
-    NSURL *videoUrl = [NSURL URLWithString:@"https://www.host.com/fake.mp4"];
-    MPVASTResponse *vastResponse = [self vastResponseFromXMLFile:@"linear-mime-types"];
-    MPVideoConfig *videoConfig = [[MPVideoConfig alloc] initWithVASTResponse:vastResponse additionalTrackers:nil];
-
-    __block BOOL didPause = NO;
-    __block BOOL didResume = NO;
-    MPVideoPlayerViewDelegateHandler *handler = [MPVideoPlayerViewDelegateHandler new];
-    handler.videoPlayerDidTriggerEvent = ^(id<MPVideoPlayer>  _Nonnull videoPlayer, MPVideoEvent event, NSTimeInterval videoProgress) {
-        if ([event isEqualToString:MPVideoEventPause]) {
-            didPause = YES;
-        }
-        else if ([event isEqualToString:MPVideoEventResume]) {
-            didResume = YES;
-        }
-    };
-
-    MPVideoPlayerView *player = [[MPVideoPlayerView alloc] initWithVideoURL:videoUrl videoConfig:videoConfig];
-    player.delegate = handler;
-    XCTAssertNotNil(player);
-
-    // Load the video and fake start playback
-    [player loadVideo];
-    player.isVideoPlaying = YES;
-
-    // Fake backgrounding the app
-    NSNotification *backgroundNotification = [NSNotification notificationWithName:UIApplicationDidEnterBackgroundNotification object:nil];
-    [player handleBackgroundNotification:backgroundNotification];
-    XCTAssertTrue(didPause);
-    XCTAssertFalse(didResume);
-
-    // Fake foregrounding the app
-    NSNotification *foregroundNotification = [NSNotification notificationWithName:UIApplicationWillEnterForegroundNotification object:nil];
-    [player handleForegroundNotification:foregroundNotification];
-    XCTAssertTrue(didPause);
-    XCTAssertTrue(didResume);
-}
-
 #pragma mark - Pause and Resume
 
 - (void)testPauseTriggersEvent {

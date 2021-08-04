@@ -208,37 +208,6 @@ static NSString * const kSecondAdditionalCompleteTrackerUrl = @"mopub.com/comple
     XCTAssertTrue([clickEvent.URL.absoluteString isEqualToString:@"https://www.mopub.com/?q=videoClickTrackingWrapper"]);
 }
 
-#pragma mark - Properties
-
-- (void)testSkipOffsetAbsoluteAvailable {
-    MPVASTResponse *vastResponse = [self vastResponseFromXMLFile:@"vast_3.0-linear-no-trackers"];
-    XCTAssertNotNil(vastResponse);
-
-    MPVideoConfig *config = [[MPVideoConfig alloc] initWithVASTResponse:vastResponse additionalTrackers:nil];
-    XCTAssertNotNil(config);
-
-    // Skip offset should be 5s
-    MPVASTDurationOffset *offset = config.skipOffset;
-    XCTAssertNotNil(offset);
-    XCTAssertTrue(offset.type == MPVASTDurationOffsetTypeAbsolute);
-
-    NSTimeInterval offsetDuration = [offset timeIntervalForVideoWithDuration:30];
-    XCTAssertTrue(offsetDuration == 5);
-}
-
-- (void)testSkipOffsetAbsoluteAvailableButRewarded {
-    MPVASTResponse *vastResponse = [self vastResponseFromXMLFile:@"vast_3.0-linear-no-trackers"];
-    XCTAssertNotNil(vastResponse);
-
-    MPVideoConfig *config = [[MPVideoConfig alloc] initWithVASTResponse:vastResponse additionalTrackers:nil];
-    config.isRewardExpected = YES;
-    XCTAssertNotNil(config);
-
-    // Skip offset should be 5s, but since rewarded, it is not skippable.
-    MPVASTDurationOffset *offset = config.skipOffset;
-    XCTAssertNil(offset);
-}
-
 #pragma mark - Wrapper Extraction
 
 - (void)testExtractTrackingEventsFromWrapperWhenNoWrapper {

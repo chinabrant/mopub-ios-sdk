@@ -25,6 +25,7 @@
     MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:nil
                                                                         data:nil
                                                               isFullscreenAd:YES
+                                                                  isRewarded:NO
                                                           experimentProvider:testSubject];
 
     XCTAssertEqual(config.clickthroughExperimentBrowserAgent, MOPUBDisplayAgentTypeInApp);
@@ -40,6 +41,7 @@
     MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers
                                                                         data:nil
                                                               isFullscreenAd:YES
+                                                                  isRewarded:NO
                                                           experimentProvider:testSubject];
 
     XCTAssertEqual(config.clickthroughExperimentBrowserAgent, MOPUBDisplayAgentTypeInApp);
@@ -56,6 +58,7 @@
     MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers
                                                                         data:nil
                                                               isFullscreenAd:YES
+                                                                  isRewarded:NO
                                                           experimentProvider:testSubject];
 
     XCTAssertEqual(config.clickthroughExperimentBrowserAgent, MOPUBDisplayAgentTypeNativeSafari);

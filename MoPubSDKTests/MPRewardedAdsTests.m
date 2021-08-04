@@ -152,7 +152,7 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
         kRewardedVideoCurrencyNameMetadataKey: @"Diamonds",
         kRewardedVideoCurrencyAmountMetadataKey: @"3",
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
@@ -200,7 +200,7 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
         kFormatMetadataKey: kAdTypeFullscreen,
         kRewardedCurrenciesMetadataKey: @{ @"rewards": @[ @{ @"name": @"Coins", @"amount": @(8) } ] }
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
@@ -246,11 +246,10 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
     // }
     NSDictionary * headers = @{
         kFormatMetadataKey: kAdTypeFullscreen,
-        kRewardedDurationMetadataKey: @"30.0",
         kRewardedVideoCompletionUrlMetadataKey: @"https://test.com?verifier=123",
         kRewardedCurrenciesMetadataKey: @{ @"rewards": @[ @{ @"name": @"Coins", @"amount": @(8) } ] }
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
@@ -312,7 +311,7 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
         kFormatMetadataKey: kAdTypeFullscreen,
         kRewardedCurrenciesMetadataKey: @{ @"rewards": @[ @{ @"name": @"Coins", @"amount": @(8) }, @{ @"name": @"Diamonds", @"amount": @(1) }, @{ @"name": @"Energy", @"amount": @(20) } ] }
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
@@ -356,7 +355,7 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
         kFormatMetadataKey: kAdTypeFullscreen,
         kRewardedCurrenciesMetadataKey: @{ @"rewards": @[ @{ @"name": @"Coins", @"amount": @(8) }, @{ @"name": @"Diamonds", @"amount": @(1) }, @{ @"name": @"Energy", @"amount": @(20) } ] }
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
@@ -407,7 +406,7 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
         kFormatMetadataKey: kAdTypeFullscreen,
         kRewardedCurrenciesMetadataKey: @{ @"rewards": @[ @{ @"name": @"Coins", @"amount": @(8) }, @{ @"name": @"Diamonds", @"amount": @(1) }, @{ @"name": @"Energy", @"amount": @(20) } ] }
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
@@ -461,11 +460,10 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
     // }
     NSDictionary * headers = @{
         kFormatMetadataKey: kAdTypeFullscreen,
-        kRewardedDurationMetadataKey: @"30.0",
         kRewardedVideoCompletionUrlMetadataKey: @"https://test.com?verifier=123",
         kRewardedCurrenciesMetadataKey: @{ @"rewards": @[ @{ @"name": @"Coins", @"amount": @(8) }, @{ @"name": @"Diamonds", @"amount": @(1) }, @{ @"name": @"Energy", @"amount": @(20) } ] }
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
@@ -510,10 +508,9 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
 - (void)testRewardedS2SNoRewardSpecified {
     NSDictionary *headers = @{
         kFormatMetadataKey: kAdTypeFullscreen,
-        kRewardedDurationMetadataKey: @"30.0",
         kRewardedVideoCompletionUrlMetadataKey: @"https://test.com?verifier=123"
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
@@ -563,12 +560,11 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
     // Setup rewarded ad configuration
     NSDictionary * headers = @{
         kFormatMetadataKey: kAdTypeFullscreen,
-        kRewardedDurationMetadataKey: @"30.0",
         kRewardedVideoCurrencyNameMetadataKey: @"Diamonds",
         kRewardedVideoCurrencyAmountMetadataKey: @"3",
         kRewardedVideoCompletionUrlMetadataKey: @"https://test.com?verifier=123",
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
@@ -606,12 +602,11 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
     // Setup rewarded ad configuration
     NSDictionary * headers = @{
         kFormatMetadataKey: kAdTypeFullscreen,
-        kRewardedDurationMetadataKey: @"30.0",
         kRewardedVideoCurrencyNameMetadataKey: @"Diamonds",
         kRewardedVideoCurrencyAmountMetadataKey: @"3",
         kRewardedVideoCompletionUrlMetadataKey: @"https://test.com?verifier=123",
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
@@ -648,12 +643,11 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
     // Setup rewarded ad configuration
     NSDictionary * headers = @{
         kFormatMetadataKey: kAdTypeFullscreen,
-        kRewardedDurationMetadataKey: @"30.0",
         kRewardedVideoCurrencyNameMetadataKey: @"Diamonds",
         kRewardedVideoCurrencyAmountMetadataKey: @"3",
         kRewardedVideoCompletionUrlMetadataKey: @"https://test.com?verifier=123",
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
@@ -685,12 +679,11 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
     // Setup rewarded ad configuration
     NSDictionary * headers = @{
         kFormatMetadataKey: kAdTypeFullscreen,
-        kRewardedDurationMetadataKey: @"30.0",
         kRewardedVideoCurrencyNameMetadataKey: @"Diamonds",
         kRewardedVideoCurrencyAmountMetadataKey: @"3",
         kRewardedVideoCompletionUrlMetadataKey: @"https://test.com?verifier=123",
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
@@ -725,12 +718,11 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
     // Setup rewarded ad configuration
     NSDictionary * headers = @{
         kFormatMetadataKey: kAdTypeFullscreen,
-        kRewardedDurationMetadataKey: @"30.0",
         kRewardedVideoCurrencyNameMetadataKey: @"Diamonds",
         kRewardedVideoCurrencyAmountMetadataKey: @"3",
         kRewardedVideoCompletionUrlMetadataKey: @"https://test.com?verifier=123",
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
@@ -771,7 +763,7 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
         kRewardedVideoCurrencyNameMetadataKey: @"Diamonds",
         kRewardedVideoCurrencyAmountMetadataKey: @"3",
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
@@ -820,13 +812,12 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
     // Setup rewarded ad configuration
     NSDictionary * headers = @{
         kFormatMetadataKey: kAdTypeFullscreen,
-        kRewardedDurationMetadataKey: @"30.0",
         kCustomEventClassNameMetadataKey: @"MPMockChartboostRewardedVideoCustomEvent",
         kRewardedVideoCurrencyNameMetadataKey: @"Diamonds",
         kRewardedVideoCurrencyAmountMetadataKey: @"3",
         kRewardedVideoCompletionUrlMetadataKey: @"https://test.com?verifier=123",
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
@@ -863,13 +854,12 @@ static const NSTimeInterval kTestTimeout = 2; // seconds
         kAdTypeMetadataKey: kAdTypeInterstitial,
         kFullAdTypeMetadataKey: kAdTypeVAST,
         kFormatMetadataKey: kAdTypeFullscreen,
-        kRewardedDurationMetadataKey: @"30.0",
         kCustomEventClassNameMetadataKey: kAdTypeFullscreen,
         kRewardedVideoCurrencyNameMetadataKey: @"Diamonds",
         kRewardedVideoCurrencyAmountMetadataKey: @"3",
         kRewardedVideoCompletionUrlMetadataKey: @"https://test.com?verifier=123",
     };
-    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES];
+    MPAdConfiguration * config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:YES isRewarded:YES];
 
     // Semaphore to wait for asynchronous method to finish before continuing the test.
     XCTestExpectation * expectation = [self expectationWithDescription:@"Wait for reward completion block to fire."];
