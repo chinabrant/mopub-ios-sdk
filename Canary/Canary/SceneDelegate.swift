@@ -254,41 +254,9 @@ private extension SceneDelegate {
             return
         }
 
-        // ATT prompt cannot be delayed for external builds
-        if !UIApplication.isInternalToolingAllowed {
-            ATTrackingManager.requestTrackingAuthorization { _ in
-                // Request completed; call completion
-                completion?()
-            }
-        } else {
-            let alertController = UIAlertController(title: "Do you want to be prompted to set IDFA permissions now?", message: "IDFA consent", preferredStyle: .alert)
-
-            alertController.addAction(UIAlertAction(title: "Yes, prompt now.", style: .default, handler: { _ in
-                ATTrackingManager.requestTrackingAuthorization { _ in
-                    // Request completed; call completion
-                    completion?()
-                }
-            }))
-
-            alertController.addAction(UIAlertAction(title: "No, prompt in 1 minute.", style: .default, handler: { _ in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 60.0) {
-                    ATTrackingManager.requestTrackingAuthorization { _ in
-                        // No-op
-                    }
-                }
-
-                // Don't wait on tracking manager and call completion instead:
-                completion?()
-            }))
-
-            alertController.addAction(UIAlertAction(title: "No, prompt at next startup.", style: .cancel, handler: { _ in
-                // Not setting an authorization now. Call completion.
-                completion?()
-            }))
-
-            DispatchQueue.main.async {
-                viewController.present(alertController, animated: true, completion: nil)
-            }
+        ATTrackingManager.requestTrackingAuthorization { _ in
+            // Request completed; call completion
+            completion?()
         }
     }
 
