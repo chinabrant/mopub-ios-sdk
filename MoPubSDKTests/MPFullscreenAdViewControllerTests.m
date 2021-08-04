@@ -10,8 +10,11 @@
 #import "MPFullscreenAdViewController+MRAIDWeb.h"
 #import "MPFullscreenAdViewController+Private.h"
 #import "MPFullscreenAdViewController+Web.h"
+#import "MPFullscreenAdAdapter+Private.h"
+#import "MPFullscreenAdAdapter+Video.h"
 #import "MPFullscreenAdViewControllerDelegateMock.h"
 #import "MPProxy.h"
+#import "MPAdContainerViewMock.h"
 
 static NSTimeInterval const kTestTimeout = 3;
 
@@ -50,7 +53,7 @@ static NSTimeInterval const kTestTimeout = 3;
     viewController.webAdDelegate = self.delegateMock;
 
     XCTAssertNil(viewController.mraidController);
-    [viewController loadConfigurationForMRAIDAd:[[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:YES]];
+    [viewController loadConfigurationForMRAIDAd:[[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:YES isRewarded:NO]];
     XCTAssertNotNil(viewController.mraidController);
 
     // Force type
@@ -106,7 +109,7 @@ static NSTimeInterval const kTestTimeout = 3;
     viewController.webAdDelegate = self.delegateMock;
 
     XCTAssertNil(viewController.mraidController);
-    [viewController loadConfigurationForMRAIDAd:[[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:YES]];
+    [viewController loadConfigurationForMRAIDAd:[[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:YES isRewarded:NO]];
     XCTAssertNotNil(viewController.mraidController);
 
     // Force type
@@ -151,6 +154,134 @@ static NSTimeInterval const kTestTimeout = 3;
     [self waitForExpectationsWithTimeout:kTestTimeout handler:^(NSError *error) {
         XCTAssertNil(error);
     }];
+}
+
+#pragma mark - Interruptions
+
+- (void)testWebClickthroughPauses {
+    MPFullscreenAdViewController *viewController = [MPFullscreenAdViewController new];
+
+    MPAdContainerViewMock *mockContainerView = [MPAdContainerViewMock new];
+    viewController.adContainerView = mockContainerView;
+
+    [viewController fullscreenWebAdWillDisappear];
+    XCTAssertTrue(mockContainerView.isPaused);
+
+    [viewController fullscreenWebAdWillAppear];
+    XCTAssertFalse(mockContainerView.isPaused);
+}
+
+- (void)testMRAIDClickthroughPauses {
+    MPFullscreenAdViewController *viewController = [MPFullscreenAdViewController new];
+
+    MPAdContainerViewMock *mockContainerView = [MPAdContainerViewMock new];
+    viewController.adContainerView = mockContainerView;
+
+    [viewController fullscreenMRAIDWebAdWillDisappear];
+    XCTAssertTrue(mockContainerView.isPaused);
+
+    [viewController fullscreenMRAIDWebAdWillAppear];
+    XCTAssertFalse(mockContainerView.isPaused);
+}
+
+- (void)testVASTClickthroughPauses {
+    MPFullscreenAdAdapter *adapter = [[MPFullscreenAdAdapter alloc] init];
+    MPFullscreenAdViewController *viewController = [MPFullscreenAdViewController new];
+    adapter.viewController = viewController;
+
+    MPAdContainerViewMock *mockContainerView = [MPAdContainerViewMock new];
+    viewController.adContainerView = mockContainerView;
+
+    [adapter displayAgentWillPresentModal];
+    XCTAssertTrue(mockContainerView.isPaused);
+
+    [adapter displayAgentDidDismissModal];
+    XCTAssertFalse(mockContainerView.isPaused);
+}
+
+- (void)testAudioInterruptionPauses {
+    MPFullscreenAdAdapter *adapter = [[MPFullscreenAdAdapter alloc] init];
+    MPFullscreenAdViewController *viewController = [MPFullscreenAdViewController new];
+    adapter.viewController = viewController;
+
+    MPAdContainerViewMock *mockContainerView = [MPAdContainerViewMock new];
+    viewController.adContainerView = mockContainerView;
+
+    MPVideoPlayerView *mockPlayer = [[MPVideoPlayerView alloc] init];
+    [adapter videoPlayerAudioInterruptionDidBegin:mockPlayer];
+    XCTAssertTrue(mockContainerView.isPaused);
+
+    [adapter videoPlayerAudioInterruptionDidEnd:mockPlayer];
+    XCTAssertFalse(mockContainerView.isPaused);
+}
+
+- (void)testBackgroundingAppPauses {
+    MPFullscreenAdViewController *viewController = [MPFullscreenAdViewController new];
+
+    MPAdContainerViewMock *mockContainerView = [MPAdContainerViewMock new];
+    viewController.adContainerView = mockContainerView;
+
+    NSNotification *mockNotification = [[NSNotification alloc] initWithName:@"mockNotification" object:nil userInfo:nil];
+    [viewController appDidEnterBackground:mockNotification];
+    XCTAssertTrue(mockContainerView.isPaused);
+
+    [viewController appWillEnterForeground:mockNotification];
+    XCTAssertFalse(mockContainerView.isPaused);
+}
+
+- (void)testMultipleInterruptions {
+    MPFullscreenAdViewController *viewController = [MPFullscreenAdViewController new];
+
+    MPAdContainerViewMock *mockContainerView = [MPAdContainerViewMock new];
+    viewController.adContainerView = mockContainerView;
+
+    NSNotification *mockNotification = [[NSNotification alloc] initWithName:@"mockNotification" object:nil userInfo:nil];
+    [viewController appDidEnterBackground:mockNotification];
+    XCTAssertTrue(mockContainerView.isPaused);
+
+    [viewController fullscreenWebAdWillDisappear];
+    XCTAssertTrue(mockContainerView.isPaused);
+
+    [viewController fullscreenWebAdWillAppear];
+    XCTAssertTrue(mockContainerView.isPaused);
+
+    // The ad should not be resumed until both interruptions have ended.
+    [viewController appWillEnterForeground:mockNotification];
+    XCTAssertFalse(mockContainerView.isPaused);
+
+    // Test in a different order
+    [viewController appDidEnterBackground:mockNotification];
+    XCTAssertTrue(mockContainerView.isPaused);
+
+    [viewController fullscreenWebAdWillDisappear];
+    XCTAssertTrue(mockContainerView.isPaused);
+
+    [viewController appWillEnterForeground:mockNotification];
+    XCTAssertTrue(mockContainerView.isPaused);
+
+    [viewController fullscreenWebAdWillAppear];
+    XCTAssertFalse(mockContainerView.isPaused);
+}
+
+- (void)testEndInterruptionDoesNotResumeIfNoCorrespondingStartInterruption {
+    // Test to make sure that something that calls endInterruption does not
+    // resume if there was no corresponding startInterruption call.
+    MPFullscreenAdViewController *viewController = [MPFullscreenAdViewController new];
+
+    MPAdContainerViewMock *mockContainerView = [MPAdContainerViewMock new];
+    viewController.adContainerView = mockContainerView;
+
+    NSNotification *mockNotification = [[NSNotification alloc] initWithName:@"mockNotification" object:nil userInfo:nil];
+    [viewController appDidEnterBackground:mockNotification];
+    XCTAssertTrue(mockContainerView.isPaused);
+
+    // This calls endInterruption for clickthroughs, but since there was no
+    // corresponding startInterruption call, this should not resume.
+    [viewController fullscreenWebAdWillAppear];
+    XCTAssertTrue(mockContainerView.isPaused);
+
+    [viewController appWillEnterForeground:mockNotification];
+    XCTAssertFalse(mockContainerView.isPaused);
 }
 
 @end

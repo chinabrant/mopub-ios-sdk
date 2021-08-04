@@ -62,7 +62,7 @@ static const NSTimeInterval kTestTimeout   = 2; // seconds
 // When an AD is in the imp tracking experiment, banner impressions (include all banner formats) are fired from SDK.
 - (void)testShouldTrackImpOnDisplayWhenExperimentEnabled {
     NSDictionary *headers = @{ kBannerImpressionVisableMsMetadataKey: @"0", kBannerImpressionMinPixelMetadataKey:@"1"};
-    MPAdConfiguration *config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:NO];
+    MPAdConfiguration *config = [[MPAdConfiguration alloc] initWithMetadata:headers data:nil isFullscreenAd:NO isRewarded:NO];
     self.adapter.configuration = config;
 
     [self.adapter didDisplayAd];
@@ -71,7 +71,7 @@ static const NSTimeInterval kTestTimeout   = 2; // seconds
 
 // When an AD is not in the imp tracking experiment, banner impressions are fired from JS directly. SDK doesn't fire impression.
 - (void)testImpFiredWhenAutoTrackingEnabledForHtmlAndExperimentDisabled {
-    MPAdConfiguration *config = [[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:NO];
+    MPAdConfiguration *config = [[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:NO isRewarded:NO];
     self.adapter.configuration = config;
     self.adapter.hasTrackedImpression = NO;
 
@@ -83,7 +83,7 @@ static const NSTimeInterval kTestTimeout   = 2; // seconds
 - (void)testClickTracking {
     MPMockAnalyticsTracker *trackerMock = [MPMockAnalyticsTracker new];
     MPInlineAdAdapterMock *adapter = [MPInlineAdAdapterMock new];
-    adapter.configuration = [[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:NO];
+    adapter.configuration = [[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:NO isRewarded:NO];
     adapter.analyticsTracker = trackerMock;
 
     // Test with `enableAutomaticImpressionAndClickTracking = YES`
@@ -412,7 +412,7 @@ static const NSTimeInterval kTestTimeout   = 2; // seconds
 - (void)testSKAdImpressionCallbacksTracked {
     MPMockAnalyticsTracker *trackerMock = [MPMockAnalyticsTracker new];
     MPInlineAdAdapterMock *adapter = [MPInlineAdAdapterMock new];
-    adapter.configuration = [[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:NO];
+    adapter.configuration = [[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:NO isRewarded:NO];
     adapter.analyticsTracker = trackerMock;
 
     // Disable automatic click and impression tracking

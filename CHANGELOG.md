@@ -1,3 +1,12 @@
+## Version 5.18.0 (August 4, 2021)
+- **Features**
+  - Changed when the close button and countdown timer are presented.
+  - Added InMobi, Fyber, Ogury, and Mintegral as supported networks.
+
+- **Bug Fixes**
+  - Fixed a crash in `MPProgressOverlayView`.
+  - Fixed an issue where MRAID was not working correctly on iOS 15.
+  
 ## Version 5.17.0 (May 11, 2021)
 - **Features**
   - Added support for SKAdNetwork 2.2 including view through attribution.

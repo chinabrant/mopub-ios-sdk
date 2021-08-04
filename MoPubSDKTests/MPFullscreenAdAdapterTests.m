@@ -30,6 +30,8 @@
 #import "MPViewabilityManager+Testing.h"
 #import "NSData+Testing.h"
 #import "XCTestCase+MPAddition.h"
+#import "MPMockDiskLRUCache.h"
+#import "MoPubSDKTests-Swift.h"
 
 // For non-module targets, UIKit must be explicitly imported
 // since MoPubSDK-Swift.h will not import it.
@@ -63,6 +65,9 @@ static const NSTimeInterval kSimulatedVideoDuration = 31.0;
     MPViewabilityManager.sharedManager.isInitialized = NO;
     MPViewabilityManager.sharedManager.omidPartner = nil;
     [MPViewabilityManager.sharedManager clearCachedOMIDLibrary];
+
+    // Reset cached settings for creative experiences
+    [[MPDiskLRUCache sharedDiskCache] removeAllCachedFiles];
 }
 
 - (MPFullscreenAdAdapter *)createTestSubjectWithAdConfig:(MPAdConfiguration *)adConfig {
@@ -87,7 +92,7 @@ static const NSTimeInterval kSimulatedVideoDuration = 31.0;
     };
 
     NSData *vastData = [NSData dataFromXMLFileNamed:@"VAST_3.0_linear_ad_comprehensive"];
-    MPAdConfiguration *mockAdConfig = [[MPAdConfiguration alloc] initWithMetadata:headers data:vastData isFullscreenAd:YES];
+    MPAdConfiguration *mockAdConfig = [[MPAdConfiguration alloc] initWithMetadata:headers data:vastData isFullscreenAd:YES isRewarded:NO];
     return [self createTestSubjectWithAdConfig:mockAdConfig];
 }
 
@@ -169,10 +174,8 @@ static const NSTimeInterval kSimulatedVideoDuration = 31.0;
     [adAdapter videoPlayer:mockPlayerView
                     didTriggerEvent:MPVideoEventSkip
                       videoProgress:3];
-    XCTAssertEqual(3, [mockVastTracking countOfSelectorCalls:@selector(handleVideoEvent:videoTimeOffset:)]);
+    XCTAssertEqual(1, [mockVastTracking countOfSelectorCalls:@selector(handleVideoEvent:videoTimeOffset:)]);
     XCTAssertEqual(1, [mockVastTracking countOfVideoEventCalls:MPVideoEventSkip]);
-    XCTAssertEqual(1, [mockVastTracking countOfVideoEventCalls:MPVideoEventClose]);
-    XCTAssertEqual(1, [mockVastTracking countOfVideoEventCalls:MPVideoEventCloseLinear]);
     [mockVastTracking resetHistory];
 
     [adAdapter videoPlayer:mockPlayerView didShowIndustryIconView:mockIndustryIconView];
@@ -252,7 +255,7 @@ static const NSTimeInterval kSimulatedVideoDuration = 31.0;
         kVASTVideoTrackersMetadataKey: @"{\"events\":[\"start\",\"midpoint\",\"thirdQuartile\",\"firstQuartile\",\"complete\"],\"urls\":[\"https://mpx.mopub.com/video_event?event_type=%%VIDEO_EVENT%%\"]}"
     };
     NSData *vastData = [NSData dataFromXMLFileNamed:@"VAST_3.0_linear_ad_comprehensive"];
-    MPAdConfiguration *mockAdConfig = [[MPAdConfiguration alloc] initWithMetadata:headers data:vastData isFullscreenAd:YES];
+    MPAdConfiguration *mockAdConfig = [[MPAdConfiguration alloc] initWithMetadata:headers data:vastData isFullscreenAd:YES isRewarded:NO];
     MPFullscreenAdAdapter *adAdapter = [self createTestSubjectWithAdConfig:mockAdConfig];
     adAdapter.delegate = mockDelegate; // the delegate needs a strong reference in current scope
 
@@ -368,7 +371,7 @@ static const NSTimeInterval kSimulatedVideoDuration = 31.0;
 - (void)testClickTracking {
     MPMockAnalyticsTracker *trackerMock = [MPMockAnalyticsTracker new];
     MPFullscreenAdAdapterMock *adapter = [MPFullscreenAdAdapterMock new];
-    adapter.configuration = [[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:YES];
+    adapter.configuration = [[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:YES isRewarded:NO];
     adapter.analyticsTracker = trackerMock;
 
     // Test with `enableAutomaticImpressionAndClickTracking = YES`
@@ -416,7 +419,7 @@ static const NSTimeInterval kSimulatedVideoDuration = 31.0;
 - (void)testImpressionTracking {
     MPMockAnalyticsTracker *trackerMock = [MPMockAnalyticsTracker new];
     MPFullscreenAdAdapterMock *adapter = [MPFullscreenAdAdapterMock new];
-    adapter.configuration = [[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:YES];
+    adapter.configuration = [[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:YES isRewarded:NO];
     adapter.analyticsTracker = trackerMock;
 
     // Test with `enableAutomaticImpressionAndClickTracking = YES`
@@ -1858,7 +1861,7 @@ static const NSTimeInterval kSimulatedVideoDuration = 31.0;
     XCTAssertNotNil(loadError);
 }
 
-- (void)testRewardedStaticImageNotClickableImmediately {
+- (void)testRewardedStaticImageIsClickableImmediately {
     // Make the ad configuration
     MPAdConfiguration *adConfig = [MPAdConfigurationFactory rewardedStaticImageAdConfigurationWithJSONFileNamed:@"static_rewarded_image_creative_with_clickthrough"];
     XCTAssertNotNil(adConfig);
@@ -1902,8 +1905,8 @@ static const NSTimeInterval kSimulatedVideoDuration = 31.0;
     MPImageCreativeView *imageCreativeView = adContainerView.imageCreativeView;
     XCTAssertNotNil(imageCreativeView);
 
-    // Check that the image view isn't clickable
-    XCTAssertFalse(imageCreativeView.isClickable);
+    // Check that the image view is clickable
+    XCTAssertTrue(imageCreativeView.isClickable);
 }
 
 - (void)testNonRewardedStaticImageIsClickableImmediately {
@@ -1959,7 +1962,7 @@ static const NSTimeInterval kSimulatedVideoDuration = 31.0;
 - (void)testVtaTrackersFiredWithAutomaticImpressionTracking {
     MPMockAnalyticsTracker *trackerMock = [MPMockAnalyticsTracker new];
     MPFullscreenAdAdapterMock *adapter = [MPFullscreenAdAdapterMock new];
-    adapter.configuration = [[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:YES];
+    adapter.configuration = [[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:YES isRewarded:NO];
     adapter.analyticsTracker = trackerMock;
 
     // Test with `enableAutomaticImpressionAndClickTracking = YES`
@@ -2001,7 +2004,7 @@ static const NSTimeInterval kSimulatedVideoDuration = 31.0;
 - (void)testVtaTrackersFiredWithManualImpressionTracking {
     MPMockAnalyticsTracker *trackerMock = [MPMockAnalyticsTracker new];
     MPFullscreenAdAdapterMock *adapter = [MPFullscreenAdAdapterMock new];
-    adapter.configuration = [[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:YES];
+    adapter.configuration = [[MPAdConfiguration alloc] initWithMetadata:@{} data:nil isFullscreenAd:YES isRewarded:NO];
     adapter.analyticsTracker = trackerMock;
 
     // Test with `enableAutomaticImpressionAndClickTracking = NO`
@@ -2038,6 +2041,182 @@ static const NSTimeInterval kSimulatedVideoDuration = 31.0;
     // Test impression ends on dealloc
     adapter = nil;
     XCTAssertEqual(2, [trackerMock countOfSelectorCalls:@selector(trackEndImpressionForConfiguration:)]);
+}
+
+#pragma mark - Creative Experiences
+
+- (void)testCreativeExperienceSettingsReturnsCachedValueWhenValid {
+    NSString *adUnitID = @"testAdUnitID";
+    NSString *hash = @"testHash";
+
+    MPCreativeExperienceSettings *settings = [CreativeExperienceTestHelpers creativeExperienceSettingsWithSettingsHash:hash];
+    [MPCreativeExperiencesManager.shared cacheWithSettings:settings for:adUnitID];
+
+    MPFullscreenAdAdapter *adapter = [[MPMoPubFullscreenAdAdapter alloc] init];
+    adapter.adUnitId = adUnitID;
+
+    MPCreativeExperienceSettings *adapterSettings = [adapter creativeExperienceSettings];
+    XCTAssertNotNil(adapterSettings);
+    XCTAssert([hash isEqualToString:adapterSettings.settingsHash]);
+}
+
+- (void)testCreativeExperienceSettingsReturnsDefaultValueWhenNoCachedValue {
+    NSString *adUnitID = @"testAdUnitID";
+
+    MPFullscreenAdAdapter *adapter = [[MPMoPubFullscreenAdAdapter alloc] init];
+    adapter.adUnitId = adUnitID;
+
+    MPCreativeExperienceSettings *adapterSettings = [adapter creativeExperienceSettings];
+    XCTAssertNotNil(adapterSettings);
+    XCTAssertNil(adapterSettings.settingsHash);
+    XCTAssertEqual(adapterSettings.maxAdExperienceTime, 0.0);
+}
+
+- (void)testCreativeExperienceSettingsReturnsDefaultValueRewardedWhenNoCachedValue {
+    NSString *adUnitID = @"testAdUnitID";
+
+    MPFullscreenAdAdapter *adapter = [[MPMoPubFullscreenAdAdapter alloc] init];
+    adapter.adUnitId = adUnitID;
+    adapter.configuration = [MPAdConfigurationFactory defaultRewardedVideoConfiguration];
+
+    MPCreativeExperienceSettings *adapterSettings = [adapter creativeExperienceSettings];
+    XCTAssertNotNil(adapterSettings);
+    XCTAssertNil(adapterSettings.settingsHash);
+    XCTAssertEqual(adapterSettings.maxAdExperienceTime, 30.0);
+}
+
+- (void)testCreativeExperienceSettingsPropagatesForVAST {
+    NSString *adUnitID = @"testAdUnitID";
+    NSString *hash = @"testHash";
+
+    MPCreativeExperienceSettings *settings = [CreativeExperienceTestHelpers creativeExperienceSettingsWithSettingsHash:hash];
+    [MPCreativeExperiencesManager.shared cacheWithSettings:settings for:adUnitID];
+
+    // For VAST, the view controller is not created immediately upon calling
+    // getAdWithConfiguration, so we'll need an expectation.
+    XCTestExpectation *adLoadExpectation = [self expectationWithDescription:@"Wait for ad to load"];
+    self.adAdapterDelegateMock.adAdapterHandleFullscreenAdEventBlock = ^(id<MPAdAdapter> adapter, MPFullscreenAdEvent event) {
+        if (event == MPFullscreenAdEventDidLoad) {
+            [adLoadExpectation fulfill];
+        }
+    };
+
+    MPAdConfiguration *configuration = [MPAdConfigurationFactory rewardedAdConfigurationWithVASTXMLFileNamed:@"vast_3.0_no_endcard"];
+    MPAdTargeting *targeting = [[MPAdTargeting alloc] initWithCreativeSafeSize:CGSizeZero];
+
+    MPFullscreenAdAdapter *adapter = [[MPMoPubFullscreenAdAdapter alloc] init];
+    adapter.adapterDelegate = self.adAdapterDelegateMock;
+    adapter.adUnitId = adUnitID;
+    [adapter getAdWithConfiguration:configuration targeting:targeting];
+
+    // Wait for creative to load
+    [self waitForExpectations:@[adLoadExpectation] timeout:kTestTimeout * 20];
+
+    MPFullscreenAdViewController *viewController = adapter.viewController;
+    XCTAssertNotNil(viewController.creativeExperienceSettings);
+    XCTAssert([hash isEqualToString:viewController.creativeExperienceSettings.settingsHash]);
+
+    MPAdContainerView *adContainerView = viewController.adContainerView;
+    XCTAssertNotNil(adContainerView.creativeExperienceSettings);
+    XCTAssert([hash isEqualToString:adContainerView.creativeExperienceSettings.settingsHash]);
+}
+
+- (void)testCreativeExperienceSettingsPropagatesForMRAID {
+    NSString *adUnitID = @"testAdUnitID";
+    NSString *hash = @"testHash";
+
+    MPCreativeExperienceSettings *settings = [CreativeExperienceTestHelpers creativeExperienceSettingsWithSettingsHash:hash];
+    [MPCreativeExperiencesManager.shared cacheWithSettings:settings for:adUnitID];
+
+    // For MRAID, the view controller is not created immediately upon calling
+    // getAdWithConfiguration, so we'll need an expectation.
+    XCTestExpectation *adLoadExpectation = [self expectationWithDescription:@"Wait for ad to load"];
+    self.adAdapterDelegateMock.adAdapterHandleFullscreenAdEventBlock = ^(id<MPAdAdapter> adapter, MPFullscreenAdEvent event) {
+        if (event == MPFullscreenAdEventDidLoad) {
+            [adLoadExpectation fulfill];
+        }
+    };
+
+    MPAdConfiguration *configuration = [MPAdConfigurationFactory defaultMRAIDInterstitialConfigurationWithAdditionalHeaders:@{kFullAdTypeMetadataKey: @"mraid"}];
+    MPAdTargeting *targeting = [[MPAdTargeting alloc] initWithCreativeSafeSize:CGSizeZero];
+
+    MPFullscreenAdAdapter *adapter = [[MPMoPubFullscreenAdAdapter alloc] init];
+    adapter.adapterDelegate = self.adAdapterDelegateMock;
+    adapter.adUnitId = adUnitID;
+    [adapter getAdWithConfiguration:configuration targeting:targeting];
+
+    // Wait for creative to load
+    [self waitForExpectations:@[adLoadExpectation] timeout:kTestTimeout * 20];
+
+    MPFullscreenAdViewController *viewController = adapter.viewController;
+    XCTAssertNotNil(viewController.creativeExperienceSettings);
+    XCTAssert([hash isEqualToString:viewController.creativeExperienceSettings.settingsHash]);
+
+    MPAdContainerView *adContainerView = viewController.adContainerView;
+    XCTAssertNotNil(adContainerView.creativeExperienceSettings);
+    XCTAssert([hash isEqualToString:adContainerView.creativeExperienceSettings.settingsHash]);
+}
+
+- (void)testCreativeExperienceSettingsPropagatesForHTML {
+    NSString *adUnitID = @"testAdUnitID";
+    NSString *hash = @"testHash";
+
+    MPCreativeExperienceSettings *settings = [CreativeExperienceTestHelpers creativeExperienceSettingsWithSettingsHash:hash];
+    [MPCreativeExperiencesManager.shared cacheWithSettings:settings for:adUnitID];
+
+    // For HTML, the view controller is created as soon as we call getAdWithConfiguration,
+    // so we don't need an expectation here.
+    MPAdConfiguration *configuration = [MPAdConfigurationFactory defaultInterstitialConfigurationWithHeaders:nil HTMLString:nil];
+    MPAdTargeting *targeting = [[MPAdTargeting alloc] initWithCreativeSafeSize:CGSizeZero];
+
+    MPFullscreenAdAdapter *adapter = [[MPMoPubFullscreenAdAdapter alloc] init];
+    adapter.adapterDelegate = self.adAdapterDelegateMock;
+    adapter.adUnitId = adUnitID;
+    [adapter getAdWithConfiguration:configuration targeting:targeting];
+
+    MPFullscreenAdViewController *viewController = adapter.viewController;
+    XCTAssertNotNil(viewController.creativeExperienceSettings);
+    XCTAssert([hash isEqualToString:viewController.creativeExperienceSettings.settingsHash]);
+
+    MPAdContainerView *adContainerView = viewController.adContainerView;
+    XCTAssertNotNil(adContainerView.creativeExperienceSettings);
+    XCTAssert([hash isEqualToString:adContainerView.creativeExperienceSettings.settingsHash]);
+}
+
+- (void)testCreativeExperienceSettingsPropagatesForStaticImage {
+    NSString *adUnitID = @"testAdUnitID";
+    NSString *hash = @"testHash";
+
+    MPCreativeExperienceSettings *settings = [CreativeExperienceTestHelpers creativeExperienceSettingsWithSettingsHash:hash];
+    [MPCreativeExperiencesManager.shared cacheWithSettings:settings for:adUnitID];
+
+    // For images, the view controller is not created immediately upon calling
+    // getAdWithConfiguration, so we'll need an expectation.
+    XCTestExpectation *adLoadExpectation = [self expectationWithDescription:@"Wait for ad to load"];
+    self.adAdapterDelegateMock.adAdapterHandleFullscreenAdEventBlock = ^(id<MPAdAdapter> adapter, MPFullscreenAdEvent event) {
+        if (event == MPFullscreenAdEventDidLoad) {
+            [adLoadExpectation fulfill];
+        }
+    };
+
+    MPAdConfiguration *configuration = [MPAdConfigurationFactory defaultInterstitialStaticImageAdConfigurationWithJSONFileNamed:@"static_rewarded_image_creative_with_clickthrough"];
+    MPAdTargeting *targeting = [[MPAdTargeting alloc] initWithCreativeSafeSize:CGSizeZero];
+
+    MPFullscreenAdAdapter *adapter = [[MPMoPubFullscreenAdAdapter alloc] init];
+    adapter.adapterDelegate = self.adAdapterDelegateMock;
+    adapter.adUnitId = adUnitID;
+    [adapter getAdWithConfiguration:configuration targeting:targeting];
+
+    // Wait for creative to load
+    [self waitForExpectations:@[adLoadExpectation] timeout:kTestTimeout * 20];
+
+    MPFullscreenAdViewController *viewController = adapter.viewController;
+    XCTAssertNotNil(viewController.creativeExperienceSettings);
+    XCTAssert([hash isEqualToString:viewController.creativeExperienceSettings.settingsHash]);
+
+    MPAdContainerView *adContainerView = viewController.adContainerView;
+    XCTAssertNotNil(adContainerView.creativeExperienceSettings);
+    XCTAssert([hash isEqualToString:adContainerView.creativeExperienceSettings.settingsHash]);
 }
 
 @end

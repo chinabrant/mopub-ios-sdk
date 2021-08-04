@@ -24,6 +24,7 @@
 #import "NSURLComponents+Testing.h"
 #import "MPRateLimitManager.h"
 #import "MPSKAdNetworkManager+Testing.h"
+#import "MPMockDiskLRUCache.h"
 
 static NSString * const kTestAdUnitId = @"";
 static NSString * const kTestKeywords = @"";
@@ -64,6 +65,9 @@ static NSString * const kLastChangedMsStorageKey                 = @"com.mopub.m
 
     // Reset mocked location string
     MPAdServerURLBuilder.locationAuthorizationStatus = MPLocationAuthorizationStatusNotDetermined;
+
+    // Reset cached settings for creative experiences
+    [[MPDiskLRUCache sharedDiskCache] removeAllCachedFiles];
 }
 
 - (void)tearDown {
@@ -463,6 +467,18 @@ static NSString * const kLastChangedMsStorageKey                 = @"com.mopub.m
     NSString * deviceNameValue = [url stringForPOSTDataKey:kDeviceNameKey];
     XCTAssertNotNil(deviceNameValue);
 
+    NSString * deviceMakeValue = [url stringForPOSTDataKey:kDeviceMakeKey];
+    XCTAssert([deviceMakeValue isEqualToString:@"Apple"]);
+
+    NSString * deviceModelValue = [url stringForPOSTDataKey:kDeviceModelKey];
+    XCTAssertNotNil(deviceModelValue);
+
+    NSString * deviceOSVValue = [url stringForPOSTDataKey:kOSVKey];
+    XCTAssertNotNil(deviceOSVValue);
+
+    NSString * deviceHWVValue = [url stringForPOSTDataKey:kHWVKey];
+    XCTAssertNotNil(deviceHWVValue);
+
     NSString * adUnitValue = [url stringForPOSTDataKey:kAdUnitKey];
     XCTAssert([adUnitValue isEqualToString:testAdUnitID]);
 }
@@ -658,6 +674,34 @@ static NSString * const kLastChangedMsStorageKey                 = @"com.mopub.m
         adRequestURL = [MPAdServerURLBuilder URLWithAdUnitID:@"asfdjkl" targeting:nil];
         XCTAssert([@"restricted" isEqualToString:(NSString *)adRequestURL.postData[kTrackingAuthorizationStatusKey]]);
     }
+}
+
+#pragma mark - Creative Experiences
+- (void)testCreativeExperienceSettingsSendsZeroHashIfNoCachedValue {
+    MPURL *adRequestURL = [MPAdServerURLBuilder URLWithAdUnitID:@"testAdUnitID" targeting:nil];
+    XCTAssert([@"0" isEqualToString:(NSString *)adRequestURL.postData[kCreativeExperiencesLastSyncHashKey]]);
+}
+
+- (void)testCreativeExperienceSettingsSendsZeroIfValidCachedValueButNilHash {
+    NSString *adUnitID = @"testAdUnitID";
+
+    MPCreativeExperienceSettings *settings = [CreativeExperienceTestHelpers creativeExperienceSettingsWithSettingsHash:nil];
+    [MPCreativeExperiencesManager.shared cacheWithSettings:settings for:adUnitID];
+
+    MPURL *adRequestURL = [MPAdServerURLBuilder URLWithAdUnitID:adUnitID targeting:nil];
+    XCTAssert([@"0" isEqualToString:(NSString *)adRequestURL.postData[kCreativeExperiencesLastSyncHashKey]]);
+}
+
+- (void)testCreativeExperienceSettingsSendsHashIfValidCachedValue {
+    NSString *adUnitID = @"testAdUnitID";
+    NSString *hash = @"testHash";
+
+    MPCreativeExperienceSettings *settings = [CreativeExperienceTestHelpers creativeExperienceSettingsWithSettingsHash:hash];
+    [MPCreativeExperiencesManager.shared cacheWithSettings:settings for:adUnitID];
+
+    MPURL *adRequestURL = [MPAdServerURLBuilder URLWithAdUnitID:adUnitID targeting:nil];
+    NSString *requestHash = (NSString *)adRequestURL.postData[kCreativeExperiencesLastSyncHashKey];
+    XCTAssert([hash isEqualToString:requestHash]);
 }
 
 @end

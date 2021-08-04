@@ -14,6 +14,17 @@
 #import "MPConsentManager+Testing.h"
 #import "MPError.h"
 #import "MPRateLimitManager.h"
+#import "MPMockDiskLRUCache.h"
+
+// For non-module targets, UIKit must be explicitly imported
+// since MoPubSDK-Swift.h will not import it.
+#if __has_include(<MoPubSDK/MoPubSDK-Swift.h>)
+    #import <UIKit/UIKit.h>
+    #import <MoPubSDK/MoPubSDK-Swift.h>
+#else
+    #import <UIKit/UIKit.h>
+    #import "MoPubSDK-Swift.h"
+#endif
 
 static NSTimeInterval const kTimeoutTime = 0.5;
 static NSUInteger const kDefaultRateLimitTimeMs = 400;
@@ -43,6 +54,9 @@ static NSString * const kIsWhitelistedUserDefaultsKey = @"com.mopub.mopub-ios-sd
     self.communicatorDelegateHandler = [[MPAdServerCommunicatorDelegateHandler alloc] init];
     self.communicator = [[MPAdServerCommunicator alloc] initWithDelegate:self.communicatorDelegateHandler];
     self.communicator.loading = YES;
+
+    // Remove all cached files when testing creative experiences caching.
+    [[MPDiskLRUCache sharedDiskCache] removeAllCachedFiles];
 }
 
 - (void)tearDown {
@@ -1003,6 +1017,339 @@ static NSString * const kIsWhitelistedUserDefaultsKey = @"com.mopub.mopub-ios-sd
     XCTAssertFalse(self.communicator.isRateLimited);
     XCTAssertEqual(0, [[MPRateLimitManager sharedInstance] lastRateLimitMillisecondsForAdUnitId:self.communicatorDelegateHandler.adUnitId]);
     XCTAssertNil([[MPRateLimitManager sharedInstance] lastRateLimitReasonForAdUnitId:self.communicatorDelegateHandler.adUnitId]);
+}
+
+#pragma mark - Creative Experiences
+
+- (void)testCreativeExperiencesSettingsCachesValueWhenValid {
+    NSDictionary *responseDataDict = @{
+        kAdResponsesKey: @[ @{
+            kAdResonsesMetadataKey: @{
+                @"x-adtype": @"mraid",
+            },
+            kAdResonsesContentKey: @""
+        }],
+        kCreativeExperiencesSettingsKey: @{
+            @"max_ad_time_secs": @15
+        }
+    };
+
+    NSString *adUnitID = @"testAdUnitID";
+    self.communicatorDelegateHandler.adUnitId = adUnitID;
+
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:responseDataDict
+                                                       options:0
+                                                         error:nil];
+
+    [self.communicator didFinishLoadingWithData:jsonData];
+
+    MPCreativeExperienceSettings *settings = [MPCreativeExperiencesManager.shared cachedSettingsFor:adUnitID];
+    XCTAssertNotNil(settings);
+    XCTAssertEqual(settings.maxAdExperienceTime, 15.0);
+}
+
+- (void)testCreativeExperienceSettingsDoesNotCacheWhenMissing {
+    NSDictionary *responseDataDict = @{
+        kAdResponsesKey: @[ @{
+            kAdResonsesMetadataKey: @{
+                @"x-adtype": @"mraid",
+            },
+            kAdResonsesContentKey: @""
+        }]
+    };
+
+    NSString *adUnitID = @"testAdUnitID";
+    self.communicatorDelegateHandler.adUnitId = adUnitID;
+
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:responseDataDict
+                                                       options:0
+                                                         error:nil];
+
+    [self.communicator didFinishLoadingWithData:jsonData];
+
+    MPCreativeExperienceSettings *settings = [MPCreativeExperiencesManager.shared cachedSettingsFor:adUnitID];
+    XCTAssertNil(settings);
+}
+
+- (void)testCreativeExperienceSettingsDoesNotOverwriteWhenMissing {
+    NSDictionary *responseDataDict1 = @{
+        kAdResponsesKey: @[ @{
+            kAdResonsesMetadataKey: @{
+                @"x-adtype": @"mraid",
+            },
+            kAdResonsesContentKey: @""
+        }],
+        kCreativeExperiencesSettingsKey: @{
+            @"max_ad_time_secs": @15
+        }
+    };
+
+
+    NSString *adUnitID = @"testAdUnitID";
+    self.communicatorDelegateHandler.adUnitId = adUnitID;
+
+    NSData *jsonData1 = [NSJSONSerialization dataWithJSONObject:responseDataDict1
+                                                       options:0
+                                                         error:nil];
+
+    [self.communicator didFinishLoadingWithData:jsonData1];
+
+    MPCreativeExperienceSettings *settings = [MPCreativeExperiencesManager.shared cachedSettingsFor:adUnitID];
+    XCTAssertNotNil(settings);
+    XCTAssertEqual(settings.maxAdExperienceTime, 15.0);
+
+    // Get a second response that doesn't have CE settings, and make
+    // sure the previous settings are still cached.
+    NSDictionary *responseDataDict2 = @{
+        kAdResponsesKey: @[ @{
+            kAdResonsesMetadataKey: @{
+                @"x-adtype": @"mraid",
+            },
+            kAdResonsesContentKey: @""
+        }]
+    };
+
+    NSData *jsonData2 = [NSJSONSerialization dataWithJSONObject:responseDataDict2
+                                                       options:0
+                                                         error:nil];
+
+    [self.communicator didFinishLoadingWithData:jsonData2];
+
+    MPCreativeExperienceSettings *settings2 = [MPCreativeExperiencesManager.shared cachedSettingsFor:adUnitID];
+    XCTAssertNotNil(settings2);
+    XCTAssertEqual(settings2.maxAdExperienceTime, 15.0);
+}
+
+- (void)testCreativeExperienceSettingsOverwritesWithNewSettings {
+    NSDictionary *responseDataDict1 = @{
+        kAdResponsesKey: @[ @{
+            kAdResonsesMetadataKey: @{
+                @"x-adtype": @"mraid",
+            },
+            kAdResonsesContentKey: @""
+        }],
+        kCreativeExperiencesSettingsKey: @{
+            @"max_ad_time_secs": @15
+        }
+    };
+
+
+    NSString *adUnitID = @"testAdUnitID";
+    self.communicatorDelegateHandler.adUnitId = adUnitID;
+
+    NSData *jsonData1 = [NSJSONSerialization dataWithJSONObject:responseDataDict1
+                                                       options:0
+                                                         error:nil];
+
+    [self.communicator didFinishLoadingWithData:jsonData1];
+
+    MPCreativeExperienceSettings *settings = [MPCreativeExperiencesManager.shared cachedSettingsFor:adUnitID];
+    XCTAssertNotNil(settings);
+    XCTAssertEqual(settings.maxAdExperienceTime, 15.0);
+
+    // Get a second response that doesn't have CE settings, and make
+    // sure the previous settings are still cached.
+    NSDictionary *responseDataDict2 = @{
+        kAdResponsesKey: @[ @{
+            kAdResonsesMetadataKey: @{
+                @"x-adtype": @"mraid",
+            },
+            kAdResonsesContentKey: @""
+        }],
+        kCreativeExperiencesSettingsKey: @{
+            @"max_ad_time_secs": @20
+        }
+    };
+
+    NSData *jsonData2 = [NSJSONSerialization dataWithJSONObject:responseDataDict2
+                                                       options:0
+                                                         error:nil];
+
+    [self.communicator didFinishLoadingWithData:jsonData2];
+
+    MPCreativeExperienceSettings *settings2 = [MPCreativeExperiencesManager.shared cachedSettingsFor:adUnitID];
+    XCTAssertNotNil(settings2);
+    XCTAssertEqual(settings2.maxAdExperienceTime, 20.0);
+}
+
+- (void)testCreativeExperiencesUsesCorrectDefaultsWhenRewardedMissing {
+    NSDictionary *responseDataDict = @{
+        kAdResponsesKey: @[ @{
+            kAdResonsesMetadataKey: @{
+                @"x-adtype": @"mraid",
+            },
+            kAdResonsesContentKey: @""
+        }],
+        kCreativeExperiencesSettingsKey: @{}
+    };
+
+    NSString *adUnitID = @"testAdUnitID";
+    self.communicatorDelegateHandler.adUnitId = adUnitID;
+
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:responseDataDict
+                                                       options:0
+                                                         error:nil];
+
+    [self.communicator didFinishLoadingWithData:jsonData];
+
+    MPCreativeExperienceSettings *settings = [MPCreativeExperiencesManager.shared cachedSettingsFor:adUnitID];
+    XCTAssertNotNil(settings);
+    XCTAssertEqual(settings.maxAdExperienceTime, 0.0);
+}
+
+- (void)testCreativeExperiencesUsesCorrectDefaultsWhenNotRewarded {
+    NSDictionary *responseDataDict = @{
+        kAdResponsesKey: @[ @{
+            kAdResonsesMetadataKey: @{
+                @"x-adtype": @"mraid",
+                @"rewarded": @(0),
+            },
+            kAdResonsesContentKey: @""
+        }],
+        kCreativeExperiencesSettingsKey: @{}
+    };
+
+    NSString *adUnitID = @"testAdUnitID";
+    self.communicatorDelegateHandler.adUnitId = adUnitID;
+
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:responseDataDict
+                                                       options:0
+                                                         error:nil];
+
+    [self.communicator didFinishLoadingWithData:jsonData];
+
+    MPCreativeExperienceSettings *settings = [MPCreativeExperiencesManager.shared cachedSettingsFor:adUnitID];
+    XCTAssertNotNil(settings);
+    XCTAssertEqual(settings.maxAdExperienceTime, 0.0);
+}
+
+- (void)testCreativeExperiencesUsesCorrectDefaultsWhenRewarded {
+    NSDictionary *responseDataDict = @{
+        kAdResponsesKey: @[ @{
+            kAdResonsesMetadataKey: @{
+                @"x-adtype": @"mraid",
+            },
+            kAdResonsesContentKey: @""
+        }],
+        kCreativeExperiencesSettingsKey: @{},
+        @"rewarded": @(1),
+    };
+
+    NSString *adUnitID = @"testAdUnitID";
+    self.communicatorDelegateHandler.adUnitId = adUnitID;
+
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:responseDataDict
+                                                       options:0
+                                                         error:nil];
+
+    [self.communicator didFinishLoadingWithData:jsonData];
+
+    MPCreativeExperienceSettings *settings = [MPCreativeExperiencesManager.shared cachedSettingsFor:adUnitID];
+    XCTAssertNotNil(settings);
+    XCTAssertEqual(settings.maxAdExperienceTime, 30.0);
+}
+
+#pragma mark - Rewarded
+
+- (void)testRewardedParseStringInputSuccess {
+    NSDictionary *responseDataDict = @{
+        kAdResponsesKey: @[ @{
+            kAdResonsesMetadataKey: @{
+                @"x-adtype": @"mraid",
+            },
+            kAdResonsesContentKey: @""
+        }],
+        @"rewarded": @"1",
+    };
+
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:responseDataDict
+                                                       options:0
+                                                         error:nil];
+    XCTAssertNotNil(jsonData);
+    NSData *responseData = [NSMutableData dataWithData:jsonData];
+
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Wait for success delegate to be called"];
+    __block NSArray<MPAdConfiguration *> *adConfigurations;
+    self.communicatorDelegateHandler.communicatorDidReceiveAdConfigurations = ^(NSArray<MPAdConfiguration *> *configurations){
+        adConfigurations = configurations;
+        [expectation fulfill];
+    };
+    [self.communicator didFinishLoadingWithData:responseData];
+
+    [self waitForExpectationsWithTimeout:kTimeoutTime handler:^(NSError *error){
+        XCTAssertNil(error);
+    }];
+
+    XCTAssertNotNil(adConfigurations);
+    XCTAssertEqual(adConfigurations.count, 1);
+    XCTAssertTrue(adConfigurations.firstObject.isRewarded);
+}
+
+- (void)testRewardedParseNumberInputSuccess {
+    NSDictionary *responseDataDict = @{
+        kAdResponsesKey: @[ @{
+            kAdResonsesMetadataKey: @{
+                @"x-adtype": @"mraid",
+            },
+            kAdResonsesContentKey: @""
+        }],
+        @"rewarded": @(1),
+    };
+
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:responseDataDict
+                                                       options:0
+                                                         error:nil];
+    XCTAssertNotNil(jsonData);
+    NSData *responseData = [NSMutableData dataWithData:jsonData];
+
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Wait for success delegate to be called"];
+    __block NSArray<MPAdConfiguration *> *adConfigurations;
+    self.communicatorDelegateHandler.communicatorDidReceiveAdConfigurations = ^(NSArray<MPAdConfiguration *> *configurations){
+        adConfigurations = configurations;
+        [expectation fulfill];
+    };
+    [self.communicator didFinishLoadingWithData:responseData];
+
+    [self waitForExpectationsWithTimeout:kTimeoutTime handler:^(NSError *error){
+        XCTAssertNil(error);
+    }];
+
+    XCTAssertNotNil(adConfigurations);
+    XCTAssertEqual(adConfigurations.count, 1);
+    XCTAssertTrue(adConfigurations.firstObject.isRewarded);
+}
+
+- (void)testRewardedDefaultsToFalseWhenMissing {
+    NSDictionary *responseDataDict = @{
+        kAdResponsesKey: @[ @{
+            kAdResonsesMetadataKey: @{
+                @"x-adtype": @"mraid",
+            },
+            kAdResonsesContentKey: @""
+        }]
+    };
+
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:responseDataDict
+                                                       options:0
+                                                         error:nil];
+    XCTAssertNotNil(jsonData);
+    NSData *responseData = [NSMutableData dataWithData:jsonData];
+
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Wait for success delegate to be called"];
+    __block NSArray<MPAdConfiguration *> *adConfigurations;
+    self.communicatorDelegateHandler.communicatorDidReceiveAdConfigurations = ^(NSArray<MPAdConfiguration *> *configurations){
+        adConfigurations = configurations;
+        [expectation fulfill];
+    };
+    [self.communicator didFinishLoadingWithData:responseData];
+
+    [self waitForExpectationsWithTimeout:kTimeoutTime handler:^(NSError *error){
+        XCTAssertNil(error);
+    }];
+
+    XCTAssertNotNil(adConfigurations);
+    XCTAssertEqual(adConfigurations.count, 1);
+    XCTAssertFalse(adConfigurations.firstObject.isRewarded);
 }
 
 @end

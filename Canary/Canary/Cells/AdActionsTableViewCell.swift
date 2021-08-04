@@ -107,7 +107,8 @@ final class AdActionsTableViewCell: UITableViewCell, TableViewCellRegisterable {
         // Showing an ad is optional. Hide it if there is no show handler.
         showAdButton.isHidden = (showAdHandler == nil)
         showAdButton.isEnabled = showButtonEnabled
-        
+        // Changing accessibilityValue while setting `isEnabled` allows dorna tests to detect enabled state correctly
+        showAdButton.accessibilityValue = "Show ad"
         // Require re-layout
         setNeedsLayout()
     }

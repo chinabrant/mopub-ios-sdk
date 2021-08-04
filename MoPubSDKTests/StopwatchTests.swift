@@ -72,7 +72,23 @@ class StopwatchTests: XCTestCase {
 
         duration = stopwatch.stop()
         XCTAssert(duration == 0.0)
+    }
+    
+    func testPauseResume() {
+        let stopwatch = Stopwatch()
+        XCTAssertFalse(stopwatch.isRunning)
 
+        stopwatch.start()
+        XCTAssertTrue(stopwatch.isRunning)
+
+        stopwatch.pause()
+        XCTAssertFalse(stopwatch.isRunning)
+        
+        stopwatch.resume()
+        XCTAssertTrue(stopwatch.isRunning)
+        
+        stopwatch.stop()
+        XCTAssertFalse(stopwatch.isRunning)
     }
 }
 

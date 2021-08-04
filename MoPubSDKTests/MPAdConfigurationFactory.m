@@ -19,7 +19,7 @@
 + (MPAdConfiguration *)clearResponse
 {
     NSDictionary * metadata = @{ kAdTypeMetadataKey: kAdTypeClear };
-    return [[MPAdConfiguration alloc] initWithMetadata:metadata data:nil isFullscreenAd:YES];
+    return [[MPAdConfiguration alloc] initWithMetadata:metadata data:nil isFullscreenAd:YES isRewarded:NO];
 }
 
 #pragma mark - Native
@@ -90,7 +90,8 @@
                                                   data:[NSJSONSerialization dataWithJSONObject:allProperties
                                                                                        options:NSJSONWritingPrettyPrinted
                                                                                          error:nil]
-                                        isFullscreenAd:NO];
+                                        isFullscreenAd:NO
+                                            isRewarded:NO];
 }
 
 #pragma mark - Banners
@@ -145,7 +146,8 @@
 
     return [[MPAdConfiguration alloc] initWithMetadata:headers
                                                   data:[HTMLString dataUsingEncoding:NSUTF8StringEncoding]
-                                        isFullscreenAd:NO];
+                                        isFullscreenAd:NO
+                                            isRewarded:NO];
 }
 
 #pragma mark - Interstitials
@@ -256,12 +258,13 @@
 
     return [[MPAdConfiguration alloc] initWithMetadata:headers
                                                   data:[HTMLString dataUsingEncoding:NSUTF8StringEncoding]
-                                        isFullscreenAd:YES];
+                                        isFullscreenAd:YES
+                                            isRewarded:NO];
 }
 
 + (MPAdConfiguration *)defaultVASTConfigurationWithVideoTrackers
 {
-    MPAdConfiguration *adConfiguration = [[MPAdConfiguration alloc] initWithMetadata:[self defaultVASTHeadersWithTrackers] data:nil isFullscreenAd:YES];
+    MPAdConfiguration *adConfiguration = [[MPAdConfiguration alloc] initWithMetadata:[self defaultVASTHeadersWithTrackers] data:nil isFullscreenAd:YES isRewarded:NO];
     return adConfiguration;
 }
 
@@ -271,7 +274,8 @@
     NSMutableDictionary *metadata = [self defaultInterstitialStaticImageHeaders];
     MPAdConfiguration *adConfiguration = [[MPAdConfiguration alloc] initWithMetadata:metadata
                                                                                 data:jsonFile
-                                                                      isFullscreenAd:YES];
+                                                                      isFullscreenAd:YES
+                                                                          isRewarded:NO];
     return adConfiguration;
 }
 
@@ -287,7 +291,6 @@
               kImpressionTrackerMetadataKey: @"http://ads.mopub.com/m/impressionTracker",
               kFullAdTypeMetadataKey: kAdTypeHtml,
               kCustomEventClassNameMetadataKey: @"MPMoPubFullscreenAdAdapter",
-              kRewardedDurationMetadataKey: @"30.0",
               kViewabilityVerificationResourcesKey: @[@{
                                                           @"apiFramework": @"omid",
                                                           @"vendorKey": @"doubleverify.com-omid",
@@ -308,7 +311,7 @@
 + (NSMutableDictionary *)defaultRewardedStaticImageHeaders
 {
     NSMutableDictionary *dict = [[self defaultRewardedVideoHeaders] mutableCopy];
-    dict[kRewardedDurationMetadataKey] = @"5.0";
+    dict[kRewardedMetadataKey] = @"1";
     dict[kFullAdTypeMetadataKey] = kAdTypeNative;
     return dict;
 }
@@ -329,7 +332,7 @@
 
 + (MPAdConfiguration *)defaultRewardedVideoConfiguration
 {
-    MPAdConfiguration *adConfiguration = [[MPAdConfiguration alloc] initWithMetadata:[self defaultRewardedVideoHeaders] data:nil isFullscreenAd:YES];
+    MPAdConfiguration *adConfiguration = [[MPAdConfiguration alloc] initWithMetadata:[self defaultRewardedVideoHeaders] data:nil isFullscreenAd:YES isRewarded:YES];
     return adConfiguration;
 }
 
@@ -346,19 +349,19 @@
         [metadata addEntriesFromDictionary:additionalMetadata];
     }
 
-    MPAdConfiguration *adConfiguration = [[MPAdConfiguration alloc] initWithMetadata:metadata data:nil isFullscreenAd:YES];
+    MPAdConfiguration *adConfiguration = [[MPAdConfiguration alloc] initWithMetadata:metadata data:nil isFullscreenAd:YES isRewarded:NO];
     return adConfiguration;
 }
 
 + (MPAdConfiguration *)defaultRewardedVideoConfigurationWithReward
 {
-    MPAdConfiguration *adConfiguration = [[MPAdConfiguration alloc] initWithMetadata:[self defaultRewardedVideoHeadersWithReward] data:nil isFullscreenAd:YES];
+    MPAdConfiguration *adConfiguration = [[MPAdConfiguration alloc] initWithMetadata:[self defaultRewardedVideoHeadersWithReward] data:nil isFullscreenAd:YES isRewarded:NO];
     return adConfiguration;
 }
 
 + (MPAdConfiguration *)defaultRewardedVideoConfigurationServerToServer
 {
-    MPAdConfiguration *adConfiguration = [[MPAdConfiguration alloc] initWithMetadata:[self defaultRewardedVideoHeadersServerToServer] data:nil isFullscreenAd:YES];
+    MPAdConfiguration *adConfiguration = [[MPAdConfiguration alloc] initWithMetadata:[self defaultRewardedVideoHeadersServerToServer] data:nil isFullscreenAd:YES isRewarded:NO];
     return adConfiguration;
 }
 
@@ -369,7 +372,8 @@
     metadata[kFullAdTypeMetadataKey] = kAdTypeVAST;
     MPAdConfiguration *adConfiguration = [[MPAdConfiguration alloc] initWithMetadata:metadata
                                                                                 data:vastXML
-                                                                      isFullscreenAd:YES];
+                                                                      isFullscreenAd:YES
+                                                                          isRewarded:YES];
     return adConfiguration;
 }
 
@@ -379,7 +383,8 @@
     NSMutableDictionary *metadata = [NSMutableDictionary dictionaryWithDictionary:[self defaultRewardedStaticImageHeaders]];
     MPAdConfiguration *adConfiguration = [[MPAdConfiguration alloc] initWithMetadata:metadata
                                                                                 data:jsonFile
-                                                                      isFullscreenAd:YES];
+                                                                      isFullscreenAd:YES
+                                                                          isRewarded:YES];
     return adConfiguration;
 }
 

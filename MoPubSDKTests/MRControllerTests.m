@@ -108,71 +108,6 @@
 
 @end
 
-#pragma mark - Test Utility (Close Button Frame Validation)
-
-/**
- This class is for the test subject of Close button frame validation tests.
- */
-@interface MRControllerCloseButtonFrameValidationTestSubject : NSObject
-@property (nonatomic, assign) MPAdViewCloseButtonLocation closeButtonLocation;
-@property (nonatomic, assign) CGRect adFrame;
-@property (nonatomic, assign) CGRect applicationSafeArea;
-@property (nonatomic, assign) BOOL expectedToBeValid;
-@end
-
-@implementation MRControllerCloseButtonFrameValidationTestSubject
-
-- (instancetype)initWithCloseButtonLocation:(MPAdViewCloseButtonLocation)closeButtonLocation
-                                    adFrame:(CGRect)adFrame
-                        applicationSafeArea:(CGRect)applicationSafeArea
-                          expectedToBeValid:(BOOL)expectedToBeValid {
-    self = [super init];
-    if (self) {
-        _closeButtonLocation = closeButtonLocation;
-        _adFrame = adFrame;
-        _applicationSafeArea = applicationSafeArea;
-        _expectedToBeValid = expectedToBeValid;
-    }
-    return self;
-}
-
-+ (NSArray *)defaultTestSubjects {
-    CGRect appSafeArea = CGRectMake(0, 20, 320, 460);
-
-    return @[// ad fully off screen (including its Close button)
-             [[MRControllerCloseButtonFrameValidationTestSubject alloc] initWithCloseButtonLocation:MPAdViewCloseButtonLocationTopLeft
-                                                                                            adFrame:CGRectOffset(appSafeArea, appSafeArea.size.width * 2, appSafeArea.size.height * 2)
-                                                                                applicationSafeArea:appSafeArea
-                                                                                  expectedToBeValid:NO],
-
-             // ad partially off screen, and its Close button fully off screen
-             [[MRControllerCloseButtonFrameValidationTestSubject alloc] initWithCloseButtonLocation:MPAdViewCloseButtonLocationTopRight
-                                                                                            adFrame:CGRectOffset(appSafeArea, kMPAdViewCloseButtonSize.width * 2, kMPAdViewCloseButtonSize.height * 2)
-                                                                                applicationSafeArea:appSafeArea
-                                                                                  expectedToBeValid:NO],
-
-             // ad partially off screen, and its Close button partially off screen
-             [[MRControllerCloseButtonFrameValidationTestSubject alloc] initWithCloseButtonLocation:MPAdViewCloseButtonLocationBottomLeft
-                                                                                            adFrame:CGRectOffset(appSafeArea, -kMPAdViewCloseButtonSize.width / 2, -kMPAdViewCloseButtonSize.height / 2)
-                                                                                applicationSafeArea:appSafeArea
-                                                                                  expectedToBeValid:NO],
-
-             // ad partially off screen, and its Close button full on screen
-             [[MRControllerCloseButtonFrameValidationTestSubject alloc] initWithCloseButtonLocation:MPAdViewCloseButtonLocationBottomLeft
-                                                                                            adFrame:CGRectOffset(appSafeArea, kMPAdViewCloseButtonSize.width, 0)
-                                                                                applicationSafeArea:appSafeArea
-                                                                                  expectedToBeValid:YES],
-
-             // ad fully on screen (including its Close button)
-             [[MRControllerCloseButtonFrameValidationTestSubject alloc] initWithCloseButtonLocation:MPAdViewCloseButtonLocationCenter
-                                                                                            adFrame:appSafeArea
-                                                                                applicationSafeArea:appSafeArea
-                                                                                  expectedToBeValid:YES]
-             ];
-}
-
-@end
-
 #pragma mark - Tests
 
 @interface MRControllerTests : XCTestCase
@@ -189,17 +124,6 @@
         XCTAssertEqual(t.expectedToBeValid, [MRController isValidResizeFrame:t.resizeFrame
                                                        inApplicationSafeArea:t.applicationSafeArea
                                                               allowOffscreen:t.allowOffscreen]);
-    }
-}
-
-/**
- Test the result of [MRController isValidCloseButtonPlacement:inAdFrame:inApplicationSafeArea:].
- */
-- (void)testCloseButtonFrameValidation {
-    for (MRControllerCloseButtonFrameValidationTestSubject * t in [MRControllerCloseButtonFrameValidationTestSubject defaultTestSubjects]) {
-        XCTAssertEqual(t.expectedToBeValid, [MRController isValidCloseButtonPlacement:t.closeButtonLocation
-                                                                            inAdFrame:t.adFrame
-                                                                inApplicationSafeArea:t.applicationSafeArea]);
     }
 }
 

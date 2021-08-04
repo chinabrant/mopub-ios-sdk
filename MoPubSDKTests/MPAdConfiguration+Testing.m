@@ -18,12 +18,14 @@
 - (instancetype)initWithMetadata:(NSDictionary *)metadata
                             data:(NSData *)data
                   isFullscreenAd:(BOOL)isFullscreenAd
+                      isRewarded:(BOOL)isRewarded
               experimentProvider:(MOPUBExperimentProvider *)experimentProvider {
     self = [super init];
     if (self) {
         [self commonInitWithMetadata:metadata
                                 data:data
                       isFullscreenAd:isFullscreenAd
+                          isRewarded:isRewarded
                   experimentProvider:experimentProvider];
     }
     return self;
