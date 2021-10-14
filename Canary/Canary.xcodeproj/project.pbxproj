@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1677BF862E23F3510DE6FF0F /* Pods_CanaryUnitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C42C7DD05B6D0808206F7CE2 /* Pods_CanaryUnitTests.framework */; };
 		2A1F52F7221628A000933277 /* ManualEntryInterfaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A1F52F322160A0300933277 /* ManualEntryInterfaceViewController.swift */; };
 		2A1F52F8221628AA00933277 /* UIAlertController+Picker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A1F52F52216230300933277 /* UIAlertController+Picker.swift */; };
 		2A35FAAC21B5DA6200DC8805 /* QRCodeCameraInterfaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A35FAAA21B5DA6200DC8805 /* QRCodeCameraInterfaceViewController.swift */; };
@@ -35,8 +34,10 @@
 		63840D7B25A8FDC600485586 /* BuildFile in Sources */ = {isa = PBXBuildFile; };
 		63FD4CBE258023980035CF3E /* BuildFile in Sources */ = {isa = PBXBuildFile; };
 		63FD4CE0258056D20035CF3E /* BuildFile in Sources */ = {isa = PBXBuildFile; };
+		735285A1999C898F960ACA1A /* Pods_CanaryUnitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 336E2D2CFF70D9699204CFCE /* Pods_CanaryUnitTests.framework */; };
 		7D43A87E25C9DC8300C6DCFF /* BuildFile in Sources */ = {isa = PBXBuildFile; };
 		7D43A88325C9DCB700C6DCFF /* BuildFile in Sources */ = {isa = PBXBuildFile; };
+		85875EDC167E1B535B4CA71E /* Pods_Canary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BC2E5E04AB076CB00F90CA1 /* Pods_Canary.framework */; };
 		B2564EE320AB5039000B9F7A /* SampleAds.plist in Resources */ = {isa = PBXBuildFile; fileRef = BCF7095E1FBCCF50009A3981 /* SampleAds.plist */; };
 		B275DB2E200FD64000F053F8 /* SavedAdsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B275DB2C200FD64000F053F8 /* SavedAdsDataSource.swift */; };
 		B2D3EEB6200DAF94009FEBC9 /* SavedAdsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D3EEB4200DAF94009FEBC9 /* SavedAdsManager.swift */; };
@@ -187,7 +188,6 @@
 		ECF218132278D5B8008BD940 /* NativeAdRendererMenuDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF218112278D5B8008BD940 /* NativeAdRendererMenuDataSource.swift */; };
 		ECF218162278D9A4008BD940 /* OrderPreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF218142278D9A4008BD940 /* OrderPreferenceViewController.swift */; };
 		ECF2181E227900C2008BD940 /* NativeAdRendererManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF2181C227900C2008BD940 /* NativeAdRendererManager.swift */; };
-		FC86975236AF89F250C2B094 /* Pods_Canary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E60CEFD9197AF2DAD16E01F0 /* Pods_Canary.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -234,11 +234,12 @@
 		2A35FAAA21B5DA6200DC8805 /* QRCodeCameraInterfaceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeCameraInterfaceViewController.swift; sourceTree = "<group>"; };
 		30B1462725AEAA660051CA28 /* SmokeCanaryUITests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SmokeCanaryUITests.xctestplan; sourceTree = "<group>"; };
 		30B1462B25AEAB080051CA28 /* FullCanaryAutomationTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FullCanaryAutomationTests.xctestplan; sourceTree = "<group>"; };
-		5319E11535BAD12728DF0E1F /* Pods-Canary.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Canary.release.xcconfig"; path = "Target Support Files/Pods-Canary/Pods-Canary.release.xcconfig"; sourceTree = "<group>"; };
-		7343626E86264A12DF9A37BA /* Pods-CanaryUnitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CanaryUnitTests.release.xcconfig"; path = "Target Support Files/Pods-CanaryUnitTests/Pods-CanaryUnitTests.release.xcconfig"; sourceTree = "<group>"; };
+		336E2D2CFF70D9699204CFCE /* Pods_CanaryUnitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CanaryUnitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5BC2E5E04AB076CB00F90CA1 /* Pods_Canary.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Canary.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C1FBABEDA7E4E5496C469EB /* Pods-Canary.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Canary.release.xcconfig"; path = "Target Support Files/Pods-Canary/Pods-Canary.release.xcconfig"; sourceTree = "<group>"; };
+		8FB7F971257FB7BD3EA5E58D /* Pods-CanaryUnitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CanaryUnitTests.debug.xcconfig"; path = "Target Support Files/Pods-CanaryUnitTests/Pods-CanaryUnitTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B275DB2C200FD64000F053F8 /* SavedAdsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedAdsDataSource.swift; sourceTree = "<group>"; };
 		B2D3EEB4200DAF94009FEBC9 /* SavedAdsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedAdsManager.swift; sourceTree = "<group>"; };
-		B5F5E2EA93803A9955ADAB9D /* Pods-CanaryUnitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CanaryUnitTests.debug.xcconfig"; path = "Target Support Files/Pods-CanaryUnitTests/Pods-CanaryUnitTests.debug.xcconfig"; sourceTree = "<group>"; };
 		BC003AFC20DC42FE00CD1FEB /* LogingLevelMenuDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogingLevelMenuDataSource.swift; sourceTree = "<group>"; };
 		BC014490220B6E2F0090F497 /* CanaryScreenshots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CanaryScreenshots.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC01F64F2004191400D6898B /* InterstitialAdViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterstitialAdViewController.swift; sourceTree = "<group>"; };
@@ -313,10 +314,9 @@
 		BCFE5B361FE4469200D760E9 /* AdUnitTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdUnitTableViewCell.swift; sourceTree = "<group>"; };
 		BCFE5B3A1FE446D600D760E9 /* AdUnitTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AdUnitTableViewCell.xib; sourceTree = "<group>"; };
 		BCFE5B421FE84B5200D760E9 /* BannerAdViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerAdViewController.swift; sourceTree = "<group>"; };
-		C42C7DD05B6D0808206F7CE2 /* Pods_CanaryUnitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CanaryUnitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE237F1E216BF2C800A8134A /* CanaryUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CanaryUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEBF664C2187BC2700284500 /* CallbackFunctionNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallbackFunctionNames.swift; sourceTree = "<group>"; };
-		E60CEFD9197AF2DAD16E01F0 /* Pods_Canary.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Canary.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DDD26650601065203FFE544A /* Pods-CanaryUnitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CanaryUnitTests.release.xcconfig"; path = "Target Support Files/Pods-CanaryUnitTests/Pods-CanaryUnitTests.release.xcconfig"; sourceTree = "<group>"; };
 		EC0BF26E2279EBF0003DB141 /* NativeAdRendererManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAdRendererManagerTests.swift; sourceTree = "<group>"; };
 		EC32524C224ECF8E00D955C3 /* UserDefaults+Subscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Subscript.swift"; sourceTree = "<group>"; };
 		EC325257225273AD00D955C3 /* TextAndToggleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAndToggleTableViewCell.swift; sourceTree = "<group>"; };
@@ -341,7 +341,7 @@
 		ECF218112278D5B8008BD940 /* NativeAdRendererMenuDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAdRendererMenuDataSource.swift; sourceTree = "<group>"; };
 		ECF218142278D9A4008BD940 /* OrderPreferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderPreferenceViewController.swift; sourceTree = "<group>"; };
 		ECF2181C227900C2008BD940 /* NativeAdRendererManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAdRendererManager.swift; sourceTree = "<group>"; };
-		F933CCDF37F14EE88A6F690E /* Pods-Canary.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Canary.debug.xcconfig"; path = "Target Support Files/Pods-Canary/Pods-Canary.debug.xcconfig"; sourceTree = "<group>"; };
+		FC5F4DCBAA05F0BE8C197A3C /* Pods-Canary.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Canary.debug.xcconfig"; path = "Target Support Files/Pods-Canary/Pods-Canary.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -356,7 +356,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FC86975236AF89F250C2B094 /* Pods_Canary.framework in Frameworks */,
+				85875EDC167E1B535B4CA71E /* Pods_Canary.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,7 +371,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1677BF862E23F3510DE6FF0F /* Pods_CanaryUnitTests.framework in Frameworks */,
+				735285A1999C898F960ACA1A /* Pods_CanaryUnitTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,10 +381,10 @@
 		0579E20B6B7F9CB8F99A5FA4 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				F933CCDF37F14EE88A6F690E /* Pods-Canary.debug.xcconfig */,
-				5319E11535BAD12728DF0E1F /* Pods-Canary.release.xcconfig */,
-				B5F5E2EA93803A9955ADAB9D /* Pods-CanaryUnitTests.debug.xcconfig */,
-				7343626E86264A12DF9A37BA /* Pods-CanaryUnitTests.release.xcconfig */,
+				FC5F4DCBAA05F0BE8C197A3C /* Pods-Canary.debug.xcconfig */,
+				7C1FBABEDA7E4E5496C469EB /* Pods-Canary.release.xcconfig */,
+				8FB7F971257FB7BD3EA5E58D /* Pods-CanaryUnitTests.debug.xcconfig */,
+				DDD26650601065203FFE544A /* Pods-CanaryUnitTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -602,8 +602,8 @@
 			children = (
 				2A35FAA821B5DA1C00DC8805 /* AVFoundation.framework */,
 				BCE738601FBB707500093CCD /* CoalMine.framework */,
-				E60CEFD9197AF2DAD16E01F0 /* Pods_Canary.framework */,
-				C42C7DD05B6D0808206F7CE2 /* Pods_CanaryUnitTests.framework */,
+				5BC2E5E04AB076CB00F90CA1 /* Pods_Canary.framework */,
+				336E2D2CFF70D9699204CFCE /* Pods_CanaryUnitTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -699,12 +699,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BC33E0541FBB63260060ECBE /* Build configuration list for PBXNativeTarget "Canary" */;
 			buildPhases = (
-				FEC21575C3BBF1C9F6777369 /* [CP] Check Pods Manifest.lock */,
+				50356278946582AEE3674DB0 /* [CP] Check Pods Manifest.lock */,
 				BC33E04B1FBB63260060ECBE /* Sources */,
 				BC33E04F1FBB63260060ECBE /* Frameworks */,
 				BC33E0501FBB63260060ECBE /* Resources */,
 				BC4A99D5200EBCDD00E3EB07 /* Embed Frameworks */,
-				1B491661C16E4FB16D31D809 /* [CP] Embed Pods Frameworks */,
+				7606031B3F12B04181257E43 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -737,7 +737,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EC469C1922613063006CABAA /* Build configuration list for PBXNativeTarget "CanaryUnitTests" */;
 			buildPhases = (
-				BCE3581A0D37D721B1AB2AB3 /* [CP] Check Pods Manifest.lock */,
+				A1EA8CE81DE3B64403B3387D /* [CP] Check Pods Manifest.lock */,
 				EC469C0C22613063006CABAA /* Sources */,
 				EC469C0D22613063006CABAA /* Frameworks */,
 				EC469C0E22613063006CABAA /* Resources */,
@@ -866,51 +866,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1B491661C16E4FB16D31D809 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Canary/Pods-Canary-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/LoremIpsum/LoremIpsum.framework",
-				"${BUILT_PRODUCTS_DIR}/mopub-ios-sdk/MoPubSDK.framework",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OMSDK_Mopub/OMSDK_Mopub.framework/OMSDK_Mopub",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LoremIpsum.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MoPubSDK.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OMSDK_Mopub.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Canary/Pods-Canary-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		BCE3581A0D37D721B1AB2AB3 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CanaryUnitTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		FEC21575C3BBF1C9F6777369 /* [CP] Check Pods Manifest.lock */ = {
+		50356278946582AEE3674DB0 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -926,6 +882,50 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-Canary-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7606031B3F12B04181257E43 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Canary/Pods-Canary-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/LoremIpsum/LoremIpsum.framework",
+				"${BUILT_PRODUCTS_DIR}/mopub-ios-sdk/MoPubSDK.framework",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/mopub-ios-sdk/Core/OMSDK_Mopub.framework/OMSDK_Mopub",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LoremIpsum.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MoPubSDK.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OMSDK_Mopub.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Canary/Pods-Canary-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A1EA8CE81DE3B64403B3387D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CanaryUnitTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1160,12 +1160,12 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 202107271306;
+				CURRENT_PROJECT_VERSION = 202110141051;
 				DEVELOPMENT_TEAM = 4S7XS533V3;
 				INFOPLIST_FILE = "CanaryScreenshots/Snapshots-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 5.18.0;
+				MARKETING_VERSION = 5.18.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "";
@@ -1185,12 +1185,12 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 202107271306;
+				CURRENT_PROJECT_VERSION = 202110141051;
 				DEVELOPMENT_TEAM = 4S7XS533V3;
 				INFOPLIST_FILE = "CanaryScreenshots/Snapshots-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 5.18.0;
+				MARKETING_VERSION = 5.18.2;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mopub.CanaryScreenshots;
@@ -1318,15 +1318,15 @@
 		};
 		BC33E0551FBB63260060ECBE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F933CCDF37F14EE88A6F690E /* Pods-Canary.debug.xcconfig */;
+			baseConfigurationReference = FC5F4DCBAA05F0BE8C197A3C /* Pods-Canary.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 202107271306;
+				CURRENT_PROJECT_VERSION = 202110141051;
 				DEVELOPMENT_TEAM = 4S7XS533V3;
 				INFOPLIST_FILE = Canary/Configuration/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 5.18.0;
+				MARKETING_VERSION = 5.18.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mopub.Canary;
 				PROVISIONING_PROFILE_SPECIFIER = "match Development com.mopub.*";
 				SWIFT_VERSION = 5.0;
@@ -1337,15 +1337,15 @@
 		};
 		BC33E0561FBB63260060ECBE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5319E11535BAD12728DF0E1F /* Pods-Canary.release.xcconfig */;
+			baseConfigurationReference = 7C1FBABEDA7E4E5496C469EB /* Pods-Canary.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 202107271306;
+				CURRENT_PROJECT_VERSION = 202110141051;
 				DEVELOPMENT_TEAM = 4S7XS533V3;
 				INFOPLIST_FILE = Canary/Configuration/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 5.18.0;
+				MARKETING_VERSION = 5.18.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mopub.Canary;
 				PROVISIONING_PROFILE_SPECIFIER = "match Development com.mopub.*";
 				SWIFT_VERSION = 5.0;
@@ -1361,12 +1361,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 202107271306;
+				CURRENT_PROJECT_VERSION = 202110141051;
 				DEVELOPMENT_TEAM = 4S7XS533V3;
 				INFOPLIST_FILE = "CanaryUITests/UITests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 5.18.0;
+				MARKETING_VERSION = 5.18.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mopub.CanaryUITests;
@@ -1386,12 +1386,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 202107271306;
+				CURRENT_PROJECT_VERSION = 202110141051;
 				DEVELOPMENT_TEAM = 4S7XS533V3;
 				INFOPLIST_FILE = "CanaryUITests/UITests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 5.18.0;
+				MARKETING_VERSION = 5.18.2;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mopub.CanaryUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1405,17 +1405,17 @@
 		};
 		EC469C1722613063006CABAA /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B5F5E2EA93803A9955ADAB9D /* Pods-CanaryUnitTests.debug.xcconfig */;
+			baseConfigurationReference = 8FB7F971257FB7BD3EA5E58D /* Pods-CanaryUnitTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 202107271306;
+				CURRENT_PROJECT_VERSION = 202110141051;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = CanaryUnitTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 5.18.0;
+				MARKETING_VERSION = 5.18.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "";
@@ -1432,17 +1432,17 @@
 		};
 		EC469C1822613063006CABAA /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7343626E86264A12DF9A37BA /* Pods-CanaryUnitTests.release.xcconfig */;
+			baseConfigurationReference = DDD26650601065203FFE544A /* Pods-CanaryUnitTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 202107271306;
+				CURRENT_PROJECT_VERSION = 202110141051;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = CanaryUnitTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 5.18.0;
+				MARKETING_VERSION = 5.18.2;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mopub.Canary.UnitTests;

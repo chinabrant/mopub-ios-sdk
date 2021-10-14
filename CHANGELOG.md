@@ -1,3 +1,7 @@
+## Version 5.18.2 (October 14, 2021)
+- **Bug Fixes**
+  - Worked around iOS 15 bug where `AVAudioSessionInterruptionTypeEnded` does not trigger on app foreground.
+
 ## Version 5.18.0 (August 4, 2021)
 - **Features**
   - Changed when the close button and countdown timer are presented.
