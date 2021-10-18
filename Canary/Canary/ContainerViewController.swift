@@ -6,6 +6,8 @@
 //  http://www.mopub.com/legal/sdk-license-agreement/
 //
 
+import AppTrackingTransparency
+import MoPubSDK
 import UIKit
 
 class ContainerViewController: UIViewController {
@@ -95,6 +97,11 @@ class ContainerViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Register for `didBecomeActiveNotification` notification to initialize the
+        // MoPub SDK due to iOS 15 changes where the ATT ptompt is no longer able to
+        // be called as part of the normal initialization flow.
+        NotificationCenter.default.addObserver(self, selector: #selector(checkAndInitializeSdk(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
         
         // Setup trait overrides
         setForcedTraits(for: view.bounds.size)
@@ -199,5 +206,134 @@ extension ContainerViewController: UIGestureRecognizerDelegate {
         }
         
         return true
+    }
+}
+
+// MARK: - Private App Init
+
+fileprivate extension ContainerViewController {
+    static var hasInitialized: Bool = false
+    
+    @objc func checkAndInitializeSdk(_  notification: Notification) {
+        // Only attempt initialization once.
+        guard ContainerViewController.hasInitialized == false else {
+            return
+        }
+        
+        ContainerViewController.hasInitialized = true
+        checkAndInitializeSdk(userDefaults: .standard)
+    }
+    
+    /**
+     Attempts to display the tracking authorization prompt. At completion, will check if the Canary app has a cached ad unit ID for consent. If not, the app will present an alert dialog allowing custom ad unit ID entry.
+     - Parameter containerViewController: the main container view controller
+     - Parameter userDefaults: the target `UserDefaults` instance
+     */
+    func checkAndInitializeSdk(userDefaults: UserDefaults = .standard) {
+        // Prompt for authorization status, then run the `initializeMoPubSDK` method (which
+        // also shows the GDPR prompt, if available) at completion so Canary isn't trying to present two
+        // view controllers simultaneously
+        promptForTrackingAuthorizationStatus(fromViewController: self) { [weak self] in
+            // Obtain strong reference to self, otherwise don't bother.
+            guard let self = self else { return }
+            
+            // Retrieve the ad unit used to initialize the SDK.
+            let adUnitIdForConsent: String = userDefaults.cachedAdUnitId ?? "0ac59b0996d947309c33f59d6676399f"
+            
+            // Next, initialize the SDK
+            self.initializeMoPubSdk(adUnitIdForConsent: adUnitIdForConsent, containerViewController: self, mopub: MoPub.sharedInstance())
+        }
+    }
+
+    private func promptForTrackingAuthorizationStatus(fromViewController viewController: UIViewController, completion: (() -> Void)? = nil) {
+        // If tracking authorization status is equal to `.notDetermined`, prompt
+        // to see if Canary should ask for authorization permission.
+        // Doing this check before actually requesting permission allows Canary
+        // to black-box test `.notDetermined` status, as well as `.authorized`
+        // and `.denied`. Not showing the prompt makes it so `.notDetermined`
+        // cannot be properly tested as the call to `requestTrackingAuthorization`
+        // forces a state-change to strictly `.denied` or `.authorized`.
+        
+        guard #available(iOS 14.0, *) else {
+            // Not running iOS 14
+            completion?()
+            return
+        }
+        
+        guard ATTrackingManager.trackingAuthorizationStatus == .notDetermined else {
+            // Already have an authorization status; don't need to reprompt
+            completion?()
+            return
+        }
+        
+        ATTrackingManager.requestTrackingAuthorization { _ in
+            // Request completed; call completion
+            completion?()
+        }
+    }
+
+    /**
+     Initializes the MoPub SDK with the given ad unit ID used for consent management.
+     - Parameter adUnitIdForConsent: This value must be a valid ad unit ID associated with your app.
+     - Parameter containerViewController: the main container view controller
+     - Parameter mopub: the target `MoPub` instance
+     */
+    func initializeMoPubSdk(adUnitIdForConsent: String,
+                            containerViewController: ContainerViewController,
+                            mopub: MoPub = .sharedInstance(),
+                            completion: (() -> Void)? = nil) {
+        // MoPub SDK initialization
+        let sdkConfig = MPMoPubConfiguration(adUnitIdForAppInitialization: adUnitIdForConsent)
+        sdkConfig.globalMediationSettings = []
+        sdkConfig.loggingLevel = .info
+        
+        mopub.initializeSdk(with: sdkConfig) {
+            // Update the state of the menu now that the SDK has completed initialization.
+            if let menuController = containerViewController.menuViewController {
+                menuController.updateIfNeeded()
+            }
+            
+            // Request user consent to collect personally identifiable information
+            // used for targeted ads
+            if let tabBarController = containerViewController.mainTabBarController {
+                ContainerViewController.displayConsentDialog(from: tabBarController, mopub: mopub) {
+                    completion?()
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Private Helpers
+
+fileprivate extension ContainerViewController {
+    /**
+     Loads the consent request dialog (if not already loaded), and presents the dialog
+     from the specified view controller. If user consent is not needed, nothing is done.
+     - Parameter presentingViewController: `UIViewController` used for presenting the dialog
+     - Parameter mopub: the target `MoPub` instance
+     */
+    static func displayConsentDialog(from presentingViewController: UIViewController,
+                                     mopub: MoPub = .sharedInstance(),
+                                     completion: (() -> Void)? = nil) {
+        // Verify that we need to acquire consent.
+        guard mopub.shouldShowConsentDialog else {
+            completion?()
+            return
+        }
+        
+        // Load the consent dialog if it's not available. If it is already available,
+        // the completion block will immediately fire.
+        mopub.loadConsentDialog { (error: Error?) in
+            guard error == nil else {
+                print("Consent dialog failed to load: \(String(describing: error?.localizedDescription))")
+                completion?()
+                return
+            }
+            
+            mopub.showConsentDialog(from: presentingViewController, didShow: nil) {
+                completion?()
+            }
+        }
     }
 }
