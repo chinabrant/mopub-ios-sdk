@@ -13,18 +13,18 @@
 /**
  Global variable for holding the user agent string.
  */
-NSString *gUserAgent = nil;
+NSString *gUserAgent1 = nil;
 
 /**
  Global variable for keeping `WKWebView` alive until the async call for user agent finishes.
  Note: JavaScript evaluation will fail if the `WKWebView` is deallocated before completion.
  */
-WKWebView *gWkWebView = nil;
+WKWebView *gWkWebView1 = nil;
 
 /**
  The `UserDefaults` key for accessing the cached user agent value.
  */
-NSString * const kUserDefaultsUserAgentKey = @"com.mopub.mopub-ios-sdk.user-agent";
+NSString * const kUserDefaultsUserAgentKey1 = @"com.mopub.mopub-ios-sdk.user-agent";
 
 @implementation MPWebBrowserUserAgentInfo
 
@@ -34,10 +34,10 @@ NSString * const kUserDefaultsUserAgentKey = @"com.mopub.mopub-ios-sdk.user-agen
 }
 
 + (void)obtainUserAgentFromWebView {
-    NSString *cachedUserAgent = [NSUserDefaults.standardUserDefaults stringForKey:kUserDefaultsUserAgentKey];
+    NSString *cachedUserAgent = [NSUserDefaults.standardUserDefaults stringForKey:kUserDefaultsUserAgentKey1];
     if (cachedUserAgent.length > 0) {
         // Use the cached value before the async JavaScript evaluation is successful.
-        gUserAgent = cachedUserAgent;
+        gUserAgent1 = cachedUserAgent;
     } else {
         /*
          Use the composed value before the async JavaScript evaluation is successful. This composed
@@ -49,26 +49,26 @@ NSString * const kUserDefaultsUserAgentKey = @"com.mopub.mopub-ios-sdk.user-agen
 
         NSString *systemVersion = [[UIDevice currentDevice].systemVersion stringByReplacingOccurrencesOfString:@"." withString:@"_"];
         NSString *deviceType = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"iPad" : @"iPhone";
-        gUserAgent = [NSString stringWithFormat:@"Mozilla/5.0 (%@; CPU %@ OS %@ like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        gUserAgent1 = [NSString stringWithFormat:@"Mozilla/5.0 (%@; CPU %@ OS %@ like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
                       deviceType, deviceType, systemVersion];
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        gWkWebView = [WKWebView new]; // `WKWebView` must be created in main thread
-        [gWkWebView evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        gWkWebView1 = [WKWebView new]; // `WKWebView` must be created in main thread
+        [gWkWebView1 evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
             if (error != nil) {
                 MPLogInfo(@"%@ error: %@", NSStringFromSelector(_cmd), error);
             } else if ([result isKindOfClass:NSString.class]) {
-                gUserAgent = result;
-                [NSUserDefaults.standardUserDefaults setValue:result forKeyPath:kUserDefaultsUserAgentKey];
+                gUserAgent1 = result;
+                [NSUserDefaults.standardUserDefaults setValue:result forKeyPath:kUserDefaultsUserAgentKey1];
             }
-            gWkWebView = nil;
+            gWkWebView1 = nil;
         }];
     });
 }
 
 + (NSString *)userAgent {
-    return gUserAgent;
+    return gUserAgent1;
 }
 
 @end
